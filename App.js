@@ -4,7 +4,6 @@ import {
   Text,
   View,
   ImageBackground,
-  SafeAreaView,
   TouchableOpacity,
   Animated,
   Easing,
@@ -13,7 +12,8 @@ import {
   Platform,
   Image,
 } from 'react-native';
-import Svg, { Path, Circle, Line } from 'react-native-svg';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import Svg, { Path, Circle, Line, Text as SvgText } from 'react-native-svg';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
