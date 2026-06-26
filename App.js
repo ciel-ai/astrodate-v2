@@ -13,20 +13,36 @@ import {
   Platform,
   Image,
 } from 'react-native';
-import Svg, { Path, Line } from 'react-native-svg';
+import Svg, { Path, Circle, Line, Text as SvgText } from 'react-native-svg';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
+
+// Unicode characters for Zodiac symbols with \uFE0E variation selector to force monochrome text rendering
+const ZODIAC_SYMBOLS = [
+  { char: '\u2653\uFE0E', name: 'Pisces' },
+  { char: '\u2648\uFE0E', name: 'Aries' },
+  { char: '\u2649\uFE0E', name: 'Taurus' },
+  { char: '\u264a\uFE0E', name: 'Gemini' },
+  { char: '\u264b\uFE0E', name: 'Cancer' },
+  { char: '\u264c\uFE0E', name: 'Leo' },
+  { char: '\u264d\uFE0E', name: 'Virgo' },
+  { char: '\u264e\uFE0E', name: 'Libra' },
+  { char: '\u264f\uFE0E', name: 'Scorpio' },
+  { char: '\u2650\uFE0E', name: 'Sagittarius' },
+  { char: '\u2651\uFE0E', name: 'Capricorn' },
+  { char: '\u2652\uFE0E', name: 'Aquarius' },
+];
 
 export default function App() {
   const rotateAnim = useRef(new Animated.Value(0)).current;
   const [timeLeft, setTimeLeft] = useState(2);
 
-  // Rotate animation for the transparent Zodiac Wheel
+  // Rotate animation for the custom glowing vector Zodiac Wheel
   useEffect(() => {
     Animated.loop(
       Animated.timing(rotateAnim, {
         toValue: 1,
-        duration: 90000, // 90 seconds for slow elegant rotation
+        duration: 90000, // 90 seconds for an elegant, slow rotation
         easing: Easing.linear,
         useNativeDriver: true,
       })
@@ -47,6 +63,13 @@ export default function App() {
     outputRange: ['0deg', '360deg'],
   });
 
+  // Center and Radii for the custom SVG Zodiac Wheel
+  const cx = 150;
+  const cy = 150;
+  const outerRadius = 126;
+  const innerRadius = 92;
+  const textRadius = 109;
+
   return (
     <View style={styles.outerContainer}>
       <StatusBar barStyle="light-content" translucent backgroundColor="transparent" />
@@ -62,17 +85,79 @@ export default function App() {
             {/* Center Logo & Animated Zodiac Wheel Container */}
             <View style={styles.identityContainer}>
               
-              {/* Spinning Zodiac Wheel Overlay */}
-              <Animated.Image
-                source={require('./assets/zodiac_wheel.png')}
-                style={[
-                  styles.wheelImage,
-                  {
-                    transform: [{ rotate: rotation }],
-                  },
-                ]}
-                resizeMode="contain"
-              />
+              {/* Spinning Custom Glowing Zodiac Wheel */}
+              <Animated.View style={[styles.wheelContainer, { transform: [{ rotate: rotation }] }]}>
+                <Svg width={300} height={300} viewBox="0 0 300 300">
+                  {/* Broad Ambient Glow Rings in Background */}
+                  <Circle cx={cx} cy={cy} r={outerRadius} fill="none" stroke="rgba(168, 85, 247, 0.15)" strokeWidth={10} />
+                  <Circle cx={cx} cy={cy} r={innerRadius} fill="none" stroke="rgba(168, 85, 247, 0.1)" strokeWidth={8} />
+
+                  {/* Concentric rings with sharp core + glowing edges */}
+                  <Circle cx={cx} cy={cy} r={132} stroke="rgba(216, 180, 254, 0.05)" strokeWidth={1} fill="none" />
+                  
+                  {/* Outer Ring Glow + Sharp Line */}
+                  <Circle cx={cx} cy={cy} r={outerRadius} stroke="rgba(168, 85, 247, 0.4)" strokeWidth={3} fill="none" />
+                  <Circle cx={cx} cy={cy} r={outerRadius} stroke="#ffffff" strokeWidth={1} fill="none" />
+                  
+                  {/* Inner Ring Glow + Sharp Line */}
+                  <Circle cx={cx} cy={cy} r={innerRadius} stroke="rgba(168, 85, 247, 0.4)" strokeWidth={2.5} fill="none" />
+                  <Circle cx={cx} cy={cy} r={innerRadius} stroke="#ffffff" strokeWidth={0.8} fill="none" />
+                  
+                  <Circle cx={cx} cy={cy} r={86} stroke="rgba(216, 180, 254, 0.05)" strokeWidth={1} fill="none" />
+
+                  {/* 12 radial dividers and Zodiac Symbols with custom glow */}
+                  {ZODIAC_SYMBOLS.map((symbol, idx) => {
+                    const lineAngle = -90 - idx * 30;
+                    const lineRad = (lineAngle * Math.PI) / 180;
+                    const x1 = cx + innerRadius * Math.cos(lineRad);
+                    const y1 = cy + innerRadius * Math.sin(lineRad);
+                    const x2 = cx + outerRadius * Math.cos(lineRad);
+                    const y2 = cy + outerRadius * Math.sin(lineRad);
+
+                    const textAngle = -75 - idx * 30;
+                    const textRad = (textAngle * Math.PI) / 180;
+                    const tx = cx + textRadius * Math.cos(textRad);
+                    const ty = cy + textRadius * Math.sin(textRad);
+
+                    return (
+                      <React.Fragment key={symbol.name}>
+                        {/* Sector Dividers */}
+                        <Line
+                          x1={x1}
+                          y1={y1}
+                          x2={x2}
+                          y2={y2}
+                          stroke="rgba(216, 180, 254, 0.15)"
+                          strokeWidth={0.8}
+                        />
+                        {/* Glowing shadow text overlay */}
+                        <SvgText
+                          x={tx}
+                          y={ty + 4}
+                          fill="rgba(168, 85, 247, 0.8)"
+                          fontSize={15}
+                          fontWeight="bold"
+                          textAnchor="middle"
+                          opacity={0.65}
+                        >
+                          {symbol.char}
+                        </SvgText>
+                        {/* Sharp white core text */}
+                        <SvgText
+                          x={tx}
+                          y={ty + 4}
+                          fill="#ffffff"
+                          fontSize={14}
+                          fontWeight="300"
+                          textAnchor="middle"
+                        >
+                          {symbol.char}
+                        </SvgText>
+                      </React.Fragment>
+                    );
+                  })}
+                </Svg>
+              </Animated.View>
 
               {/* Static Center Brand Logo Image */}
               <View style={styles.logoContainer}>
@@ -137,7 +222,7 @@ export default function App() {
 const styles = StyleSheet.create({
   outerContainer: {
     flex: 1,
-    backgroundColor: '#0a051b', // dark deep space fallback background
+    backgroundColor: '#0a051b', // dark space fallback background
   },
   backgroundImage: {
     flex: 1,
@@ -159,8 +244,15 @@ const styles = StyleSheet.create({
     position: 'relative',
     alignItems: 'center',
     justifyContent: 'center',
-    // Positioned slightly higher to align with the background image's original Zodiac Wheel position
     marginTop: -SCREEN_HEIGHT * 0.06,
+  },
+  wheelContainer: {
+    position: 'absolute',
+    width: 300,
+    height: 300,
+    alignItems: 'center',
+    justifyContent: 'center',
+    zIndex: 1,
   },
   wheelImage: {
     position: 'absolute',
