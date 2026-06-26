@@ -11,6 +11,7 @@ import {
   StatusBar,
   Dimensions,
   Platform,
+  Image,
 } from 'react-native';
 import Svg, { Path, Line } from 'react-native-svg';
 
@@ -25,7 +26,7 @@ export default function App() {
     Animated.loop(
       Animated.timing(rotateAnim, {
         toValue: 1,
-        duration: 90000, // 90 seconds for an ultra-slow, elegant rotation
+        duration: 90000, // 90 seconds for slow elegant rotation
         easing: Easing.linear,
         useNativeDriver: true,
       })
@@ -73,36 +74,13 @@ export default function App() {
                 resizeMode="contain"
               />
 
-              {/* Static Center Stylized "A" Logo */}
+              {/* Static Center Brand Logo Image */}
               <View style={styles.logoContainer}>
-                <Svg width={120} height={120} viewBox="0 0 200 200">
-                  {/* Right thick stem with serifs */}
-                  <Path
-                    d="M 98 42 L 120 42 L 148 142 L 163 142 C 166 142 168 144 168 147 L 168 150 L 118 150 L 118 147 C 118 144 120 142 123 142 L 131 142 L 106 52 Z"
-                    fill="#ffffff"
-                  />
-                  {/* Left curved stem - top section */}
-                  <Path
-                    d="M 98 42 C 92 60 84 80 76 92 C 74 95 72 98 70 98 C 73 90 85 70 98 42 Z"
-                    fill="#ffffff"
-                  />
-                  {/* Left curved stem - bottom section */}
-                  <Path
-                    d="M 68 114 C 64 122 59 135 56 142 L 68 142 C 71 142 73 144 73 147 L 73 150 L 40 150 L 40 147 C 40 144 42 142 45 142 L 48 142 C 51 135 56 124 60 114 Z"
-                    fill="#ffffff"
-                  />
-                  {/* Crossbar */}
-                  <Path
-                    d="M 67 114 L 123 114"
-                    stroke="#ffffff"
-                    strokeWidth={2.5}
-                  />
-                  {/* Sparkle 4-point star on the left */}
-                  <Path
-                    d="M 72 87 Q 72 105 54 105 Q 72 105 72 123 Q 72 105 90 105 Q 72 105 72 87 Z"
-                    fill="#ffffff"
-                  />
-                </Svg>
+                <Image
+                  source={require('./assets/logo.png')}
+                  style={styles.logoImage}
+                  resizeMode="contain"
+                />
               </View>
 
             </View>
@@ -197,6 +175,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     zIndex: 10,
+  },
+  logoImage: {
+    width: 100,
+    height: 100,
   },
   brandTextContainer: {
     alignItems: 'center',
