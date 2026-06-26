@@ -13,7 +13,7 @@ import {
   Platform,
   Image,
 } from 'react-native';
-import Svg, { Path, Circle, Line, Text as SvgText } from 'react-native-svg';
+import Svg, { Path, Circle, Line } from 'react-native-svg';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
@@ -159,7 +159,7 @@ export default function App() {
                 </Svg>
               </Animated.View>
 
-              {/* Static Center Brand Logo Image */}
+              {/* Static Center Brand Logo Image - Resized to fit perfectly and dominate the wheel center */}
               <View style={styles.logoContainer}>
                 <Image
                   source={require('./assets/logo.png')}
@@ -236,15 +236,15 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingTop: SCREEN_HEIGHT * 0.04,
+    paddingTop: SCREEN_HEIGHT * 0.03,
   },
   identityContainer: {
     width: 300,
-    height: 300,
+    height: 270, // Trimmed vertical height to bring text close to the wheel
     position: 'relative',
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: -SCREEN_HEIGHT * 0.06,
+    marginTop: -SCREEN_HEIGHT * 0.04,
   },
   wheelContainer: {
     position: 'absolute',
@@ -256,40 +256,40 @@ const styles = StyleSheet.create({
   },
   logoContainer: {
     position: 'absolute',
-    width: 120,
-    height: 120,
+    width: 150,
+    height: 150,
     alignItems: 'center',
     justifyContent: 'center',
     zIndex: 10,
   },
   logoImage: {
-    width: 100,
-    height: 100,
+    width: 136, // Scaled up to perfectly dominate the center of the wheel
+    height: 136,
   },
   brandTextContainer: {
     alignItems: 'center',
-    marginTop: 22,
+    marginTop: 0, // Brought right below the wheel
   },
   brandName: {
     fontFamily: Platform.OS === 'ios' ? 'Georgia' : 'serif',
-    fontSize: 45,
+    fontSize: 46,
     color: '#ffffff',
-    fontWeight: 'bold',
+    fontWeight: 'normal', // Changed from bold to normal for elegant serif weight
     textAlign: 'center',
-    letterSpacing: 0.5,
+    letterSpacing: 1.2, // Spacing to match mockup
   },
   dividerContainer: {
     height: 20,
-    marginVertical: 10,
+    marginVertical: 8,
     alignItems: 'center',
     justifyContent: 'center',
   },
   tagline: {
-    fontFamily: 'System',
-    fontSize: 12,
-    color: '#ebd9fc', // light lavender
-    fontWeight: '600',
-    letterSpacing: 3.5, // wider spacing to match reference
+    fontFamily: Platform.OS === 'ios' ? 'HelveticaNeue-Light' : 'sans-serif-light',
+    fontSize: 11,
+    color: 'rgba(255, 255, 255, 0.75)', // Elegant off-white tagline
+    fontWeight: '400',
+    letterSpacing: 4.2, // Wider letter spacing to match reference design
     textAlign: 'center',
   },
   bottomAreaContainer: {
